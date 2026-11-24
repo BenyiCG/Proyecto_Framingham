@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import joblib
@@ -23,7 +22,6 @@ modelo = cargar_modelo()
 # --- 3. Función para cargar datos (solo para EDA) ---
 @st.cache_data
 def cargar_datos_eda():
-    # Nota: Deberás subir 'framingham.csv' a tu repositorio de GitHub
     ruta_csv = 'framingham.csv' 
     if os.path.exists(ruta_csv):
         return pd.read_csv(ruta_csv)
@@ -75,12 +73,12 @@ with tab2:
     if modelo is None:
         st.error("⚠️ El modelo no está cargado. Asegúrate de que el archivo 'model/pipeline_framingham.pkl' esté en el repositorio.")
     else:
-        # Crear columnas para el formulario
+        # Crear columnas para el formulario (Rangos ajustados a los reales del dataset)
         col1, col2, col3 = st.columns(3)
         
         with col1:
             male = st.selectbox("Sexo Biológico", options=[1, 0], format_func=lambda x: "Masculino" if x == 1 else "Femenino")
-            age = st.number_input("Edad (años)", min_value=30, max_value=80, value=50)
+            age = st.number_input("Edad (años)", min_value=32, max_value=70, value=50)
             education = st.selectbox("Nivel Educativo (1-4)", options=[1.0, 2.0, 3.0, 4.0])
             currentSmoker = st.selectbox("¿Fuma actualmente?", options=[1, 0], format_func=lambda x: "Sí" if x == 1 else "No")
             cigsPerDay = st.number_input("Cigarrillos por día", min_value=0.0, max_value=70.0, value=0.0)
@@ -90,18 +88,18 @@ with tab2:
             prevalentStroke = st.selectbox("¿Ha tenido un derrame cerebral?", options=[1, 0], format_func=lambda x: "Sí" if x == 1 else "No")
             prevalentHyp = st.selectbox("¿Tiene hipertensión?", options=[1, 0], format_func=lambda x: "Sí" if x == 1 else "No")
             diabetes = st.selectbox("¿Tiene diabetes?", options=[1, 0], format_func=lambda x: "Sí" if x == 1 else "No")
-            totChol = st.number_input("Colesterol Total (mg/dL)", min_value=100.0, max_value=700.0, value=200.0)
+            totChol = st.number_input("Colesterol Total (mg/dL)", min_value=107.0, max_value=696.0, value=200.0)
         
         with col3:
-            sysBP = st.number_input("Presión Arterial Sistólica (mmHg)", min_value=80.0, max_value=300.0, value=120.0)
-            diaBP = st.number_input("Presión Arterial Diastólica (mmHg)", min_value=40.0, max_value=150.0, value=80.0)
-            BMI = st.number_input("Índice de Masa Corporal (IMC)", min_value=15.0, max_value=60.0, value=25.0)
-            heartRate = st.number_input("Frecuencia Cardíaca (lpm)", min_value=40.0, max_value=150.0, value=75.0)
-            glucose = st.number_input("Glucosa (mg/dL)", min_value=40.0, max_value=400.0, value=80.0)
+            sysBP = st.number_input("Presión Arterial Sistólica (mmHg)", min_value=83.5, max_value=295.0, value=120.0)
+            diaBP = st.number_input("Presión Arterial Diastólica (mmHg)", min_value=48.0, max_value=142.5, value=80.0)
+            BMI = st.number_input("Índice de Masa Corporal (IMC)", min_value=15.54, max_value=56.8, value=25.0)
+            heartRate = st.number_input("Frecuencia Cardíaca (lpm)", min_value=44.0, max_value=143.0, value=75.0)
+            glucose = st.number_input("Glucosa (mg/dL)", min_value=40.0, max_value=394.0, value=80.0)
 
         # Botón de predicción
         if st.button("Calcular Riesgo"):
-            # Crear DataFrame con los datos del formulario (mismo orden y nombres que en el entrenamiento)
+            # Crear DataFrame con los datos del formulario
             datos_paciente = pd.DataFrame([{
                 'male': male, 'age': age, 'education': education, 'currentSmoker': currentSmoker,
                 'cigsPerDay': cigsPerDay, 'BPMeds': BPMeds, 'prevalentStroke': prevalentStroke,
@@ -127,20 +125,20 @@ with tab2:
 with tab3:
     st.header("Rendimiento del Modelo")
     st.markdown("""
-    El modelo seleccionado fue el **Árbol de Decisión**, que mostró un mejor equilibrio (F1-score) para detectar los casos positivos (clase 1) en comparación con la Regresión Logística.
+    El modelo seleccionado fue la **Regresión Logística (Balanceada)**. A diferencia del modelo inicial, se aplicó un balanceo de clases (`class_weight='balanced'`) para priorizar la detección de pacientes enfermos (Recall de la clase 1), sacrificando un poco el Accuracy general. En un contexto médico, es más grave un falso negativo (no detectar al enfermo) que un falso positivo.
     """)
     
-    # Datos de métricas extraídos de tu notebook
+    # Datos de métricas extraídos de tu notebook final
     metricas_df = pd.DataFrame({
         "Métrica": ["Accuracy", "Precisión (Clase 1)", "Recall (Clase 1)", "F1-Score (Clase 1)"],
-        "Valor": [0.7630, 0.2188, 0.2171, 0.2179]
+        "Valor": [0.67, 0.25, 0.60, 0.36]
     })
     
     st.table(metricas_df)
     
-    st.subheader("Matriz de Confusión (Árbol de Decisión)")
-    # Matriz de confusión extraída de tu notebook: TN=619, FP=100, FN=101, TP=28
-    cm = np.array([[619, 100], [101, 28]])
+    st.subheader("Matriz de Confusión (Regresión Logística)")
+    # Matriz de confusión extraída de tu notebook final: TN=491, FP=228, FN=51, TP=78
+    cm = np.array([[491, 228], [51, 78]])
     fig_cm, ax_cm = plt.subplots()
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax_cm, 
                 xticklabels=['Predijo 0', 'Predijo 1'], yticklabels=['Real 0', 'Real 1'])
@@ -149,8 +147,7 @@ with tab3:
     st.pyplot(fig_cm)
     
     st.markdown("""
-    **Limitaciones:**
-    - El dataset está desbalanceado (mayoría de casos negativos).
-    - El modelo tiene un alto número de Falsos Negativos (101), lo que significa que no detecta todos los casos de riesgo.
-    - Es un prototipo académico.
+    **Análisis de Errores:**
+    - **Falsos Negativos (51):** Pacientes que sí tenían riesgo pero el modelo dijo que no. Se redujeron drásticamente en comparación con el modelo anterior (que tenía 101).
+    - **Falsos Positivos (228):** Pacientes sanos a los que se les alertó de riesgo. Es un costo aceptable en salud para no dejar pasar a los enfermos.
     """)
