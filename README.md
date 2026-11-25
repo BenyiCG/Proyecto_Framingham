@@ -1,11 +1,25 @@
-# Proyecto Minería de Datos - Framingham
+# Proyecto Final - Minería de Datos (Framingham)
 
-**Integrante:** [Benjamín José Correa Guerra]
+**Estudiante:** Benjamín José Correa Guerra  
+**Asignatura:** Minería de Datos  
+**Universidad:** Universidad de la Costa  
 
-Aplicación web interactiva para predecir el riesgo de enfermedad coronaria a 10 años.
+## Descripción del Proyecto
+Aplicación web interactiva desarrollada con Streamlit para predecir el riesgo de enfermedad coronaria a 10 años, basada en el histórico dataset de Framingham. El proyecto implementa un pipeline de `scikit-learn` (imputación, escalamiento y codificación One-Hot) y un modelo de Regresión Logística con balanceo de clases (`class_weight='balanced'`) para priorizar la detección de pacientes enfermos (Recall del 60%).
 
-## Declaración de uso de IA
-- **Herramienta:** DeepSeek / ChatGPT
-- **Propósito:** Apoyo en la estructuración del notebook y creación del dashboard en Streamlit.
-- **Verificación:** Revisamos el código y confirmamos que las variables coinciden con el dataset y las métricas con la ejecución del notebook.
-- **Decisión:** El código fue adaptado y comprendido por todos los integrantes.
+## Enlaces
+- **Aplicación en producción (Streamlit):** [https://proyectoframingham-yv3cnpgsfujl7zxhqlvwue.streamlit.app/](https://proyectoframingham-yv3cnpgsfujl7zxhqlvwue.streamlit.app/)
+- **Notebook del proyecto:** `Proyecto_Final_Mineria_Datos_Framingham.ipynb`
+
+## Cómo ejecutar el proyecto localmente
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/BenyiCG/Proyecto_Framingham.git
+   Instala las dependencias:
+
+bash
+pip install -r requirements.txt
+Ejecuta la aplicación de Streamlit:
+
+bash
+streamlit run app.py
