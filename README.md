@@ -15,9 +15,10 @@ Aplicación web interactiva desarrollada con Streamlit para predecir el riesgo d
 1. Clona el repositorio:
    ```bash
    git clone https://github.com/BenyiCG/Proyecto_Framingham.git
-   Instala las dependencias:
-
-bash
+  
+ Instala las dependencias:
+ 
+   ```bash
 pip install -r requirements.txt
 Ejecuta la aplicación de Streamlit:
 
