@@ -20,7 +20,6 @@ Aplicación web interactiva desarrollada con Streamlit para predecir el riesgo d
  
    ```bash
 pip install -r requirements.txt
- ```bash
 
 #Ejecuta la aplicación de Streamlit:
 streamlit run app.py
